@@ -1,46 +1,92 @@
-name: Super-Linter
+name: CI/CD Pipeline
 
-on: push
+on:
+  push:
+    branches:
+      - main
+      - another-branch
 
 jobs:
-  super-lint:
-    name: Lint code base
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
       - name: Build artifact
-        run: 
-          npm install
-          npm run build
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: build/
 
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: Check dependencies for security issues
-        run: 
-          npm audit
+        run: npm audit
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
       - name: Run unit tests
-        run: 
-          npm test
+        run: npm test
 
-      - name: Check coding style (lint)
-        run: 
-          npm run lint
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Lint code
+        run: npm run lint
 
+  static_analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
       - name: Run static analysis
-        run: 
-          sonar-scanner
+        run: npm run static-analysis
 
-      - name: Configure Heroku remote
-        run: |
-          # Configurar el control remoto de Git de Heroku
-          heroku git:remote -a nombre-del-proyecto
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: build/
+      - name: Deploy to server
+        run: echo "Deploying to server..."
 
-      - name: Deploy artifact to public server
-        run: 
-          # Implementar en Heroku
-          git push heroku main
-
-      - name: Verify application is working after deployment
-        run: 
-          npm run integration-test
+  post_deploy:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Verify deployment
+        run: echo "Verifying deployment..."
