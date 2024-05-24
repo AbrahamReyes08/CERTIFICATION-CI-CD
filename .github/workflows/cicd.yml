@@ -1,0 +1,46 @@
+name: Super-Linter
+
+on: push
+
+jobs:
+  super-lint:
+    name: Lint code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build artifact
+        run: 
+          npm install
+          npm run build
+
+      - name: Check dependencies for security issues
+        run: 
+          npm audit
+
+      - name: Run unit tests
+        run: 
+          npm test
+
+      - name: Check coding style (lint)
+        run: 
+          npm run lint
+
+      - name: Run static analysis
+        run: 
+          sonar-scanner
+
+      - name: Configure Heroku remote
+        run: |
+          # Configurar el control remoto de Git de Heroku
+          heroku git:remote -a nombre-del-proyecto
+
+      - name: Deploy artifact to public server
+        run: 
+          # Implementar en Heroku
+          git push heroku main
+
+      - name: Verify application is working after deployment
+        run: 
+          npm run integration-test
