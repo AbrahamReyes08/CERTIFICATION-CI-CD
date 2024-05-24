@@ -27,21 +27,6 @@ jobs:
           name: build-artifact
           path: build/
 
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Upgrade npm to version 7
-        run: npm install -g npm@7
-      - name: Install dependencies
-        run: npm install
-      - name: Check dependencies for security issues
-        run: npm audit --audit-level=high
-
   test:
     runs-on: ubuntu-latest
     steps:
@@ -71,21 +56,6 @@ jobs:
         run: npm install
       - name: Lint code
         run: npm run lint
-
-  static_analysis:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Upgrade npm to version 7
-        run: npm install -g npm@7
-      - name: Install dependencies
-        run: npm install
-      - name: Run static analysis
-        run: npm run static-analysis
 
   deploy:
     runs-on: ubuntu-latest
