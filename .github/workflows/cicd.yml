@@ -59,7 +59,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [build, test, lint]  # Asegura que el despliegue dependa de que build, test y lint se completen exitosamente
+    needs: [build, test, lint]
     steps:
       - uses: actions/checkout@v2
       - name: Download artifact
