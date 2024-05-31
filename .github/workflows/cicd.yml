@@ -73,8 +73,8 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Deploy to server
         run: |
-          scp -r build/* user@server:/path/to/deploy
-          ssh user@server "cd /path/to/deploy && ./deploy_script.sh"
+          scp -r build/* dell:/path/to/deploy
+          ssh dell "cd /path/to/deploy && ./deploy_script.sh"
 
   post_deploy:
     runs-on: ubuntu-latest
