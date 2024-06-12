@@ -1,5 +1,3 @@
-name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -57,7 +55,7 @@ jobs:
       - name: Lint code
         run: npm run lint
 
-   deploy:
+  deploy:
     runs-on: ubuntu-latest
     needs: [build, test, lint]
     steps:
