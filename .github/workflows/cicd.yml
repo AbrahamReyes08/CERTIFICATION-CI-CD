@@ -81,4 +81,24 @@ jobs:
     steps:
       - name: Verify deployment
         run: |
-          ssh user@server "curl -f https://github.com/AbrahamReyes08/CERTIFICATION-CI-CD/ || exit 1"
+          echo "Verifying deployment"
+
+          check_deployment() {
+            curl -I https://github.com/AbrahamReyes08/CERTIFICATION-CI-CD/ | grep "200 OK"
+          }
+
+          attempt=1
+          max_attempts=5
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt of $max_attempts"
+            if check_deployment; then
+              echo "Deployment verification succeeded."
+              exit 0
+            fi
+            echo "Deployment verification failed. Retrying in 10 seconds..."
+            sleep 10
+            attempt=$((attempt + 1))
+          done
+
+          echo "Deployment verification failed after $max_attempts attempts."
+          exit 1
