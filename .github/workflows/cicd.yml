@@ -84,7 +84,7 @@ jobs:
           echo "Verifying deployment"
 
           check_deployment() {
-            curl -I https://github.com/AbrahamReyes08/CERTIFICATION-CI-CD/ | grep "200 OK"
+            curl -I https://AbrahamReyes08.github.io/CERTIFICATION-CI-CD/ | grep "200 OK"
           }
 
           attempt=1
