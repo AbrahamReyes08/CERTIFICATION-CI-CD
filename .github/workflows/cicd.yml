@@ -82,9 +82,16 @@ jobs:
       - name: Verify deployment
         run: |
           echo "Verifying deployment"
-          curl -I https://abrahamreyes08.github.io/CERTIFICATION-CI-CD/ | grep "200 OK" || exit 1
+          for i in {1..5}; do
+            curl -I https://abrahamreyes08.github.io/CERTIFICATION-CI-CD/ | grep "200 OK" && break || sleep 10
+          done
       - name: Notify on failure
         if: failure()
-        run: |
-          echo "Deployment verification failed. Please check the deployment."
-          # Add your notification mechanism here, such as sending an email or a message to a Slack channel.
+        uses: mathieudutour/github-email@v2
+        with:
+          to: abraham.reye08@unitec.edu
+          subject: Deployment Failure
+          message: |
+            Deployment verification failed. Please check the deployment.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sendgrid-api-key: ${{ secrets.SENDGRID_API_KEY }}
