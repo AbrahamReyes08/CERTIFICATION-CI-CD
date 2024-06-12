@@ -87,11 +87,12 @@ jobs:
           done
       - name: Notify on failure
         if: failure()
-        uses: mathieudutour/github-email@v2
-        with:
-          to: abraham.reye08@unitec.edu
-          subject: Deployment Failure
-          message: |
-            Deployment verification failed. Please check the deployment.
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          sendgrid-api-key: ${{ secrets.SENDGRID_API_KEY }}
+        run: |
+          echo "Deployment verification failed. Please check the deployment."
+          apt-get update && apt-get install -y ssmtp
+          echo "To: abraham.reye08@unitec.edu" >> /tmp/email.txt
+          echo "From: github@noreply.com" >> /tmp/email.txt
+          echo "Subject: Deployment Failure" >> /tmp/email.txt
+          echo "" >> /tmp/email.txt
+          echo "Deployment verification failed. Please check the deployment." >> /tmp/email.txt
+          cat /tmp/email.txt | ssmtp -v your_smtp_email@example.com
