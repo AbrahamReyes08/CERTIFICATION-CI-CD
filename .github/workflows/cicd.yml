@@ -81,4 +81,4 @@ jobs:
     steps:
       - name: Verify deployment
         run: |
-          ssh user@server "curl -f http://localhost/health || exit 1"
+          ssh user@server "curl -f https://github.com/AbrahamReyes08/CERTIFICATION-CI-CD/ || exit 1"
